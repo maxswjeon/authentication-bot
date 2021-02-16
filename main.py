@@ -52,13 +52,16 @@ def main():
             await ctx.send('Invalid Public Key', delete_after=10.0)
             return
 
-        if key_data.key_type not in [b'ssh-rsa', b'ssh-ed25519']:
-            await ctx.send('Weak Key. Only RSA Keys over 2048 bits and ED25519 Keys are supported', delete_after=10.0)
-            return
+        if os.getenv('ENFORCE_STRONG_KEYS') == 'True':
+            if key_data.key_type not in [b'ssh-rsa', b'ssh-ed25519']:
+                await ctx.send('Weak Key. Only RSA Keys over 2048 bits and ED25519 Keys are supported',
+                               delete_after=10.0)
+                return
 
-        if key_data.key_type == b'ssh-rsa' and key_data.bits < 2048:
-            await ctx.send('Weak Key. Only RSA Keys over 2048 bits and ED25519 Keys are supported', delete_after=10.0)
-            return
+            if key_data.key_type == b'ssh-rsa' and key_data.bits < 2048:
+                await ctx.send('Weak Key. Only RSA Keys over 2048 bits and ED25519 Keys are supported',
+                               delete_after=10.0)
+                return
 
         cursor = database.cursor()
         keys = cursor.execute(f'SELECT key FROM user_keys WHERE user = {ctx.author.id};')
@@ -83,7 +86,7 @@ def main():
                                         '-s', 'ca_user_key',
                                         '-l', f'{user}#{key_index}',
                                         '-n', f'ubuntu,{user}',
-                                        '-V', '+1w',
+                                        '-V', f'+{os.getenv("CERTIFICATE_VALID_DAYS") or 7}d',
                                         temp_path])
         os.remove(temp_path)
         await ctx.send(cert, delete_after=30.0)

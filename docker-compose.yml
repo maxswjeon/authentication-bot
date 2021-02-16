@@ -9,6 +9,9 @@ services:
       - BOT_TOKEN=${BOT_TOKEN}
       - CA_PASS=${CA_PASS}
       - DATABASE_PATH=${DATABASE_PATH}
+      - DISCORD_CHANNELS=${DISCORD_CHANNELS}
+      - ENFORCE_STRONG_KEYS=${ENFORCE_STRONG_KEYS}
+      - CERTIFICATE_VALID_DAYS=${CERTIFICATE_VALID_DAYS}
     volumes:
       - /etc/ssh/ca_user_key:/root/ca_user_key
       - /etc/ssh/ssh_revoked_keys:/root/ssh_revoked_keys
