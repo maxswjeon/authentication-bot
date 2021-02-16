@@ -82,12 +82,17 @@ def main():
             f.write(public_key)
 
         user = ctx.author.name.split('#')[0]
-        cert = subprocess.check_output(['ssh-keygen',
-                                        '-s', 'ca_user_key',
-                                        '-l', f'{user}#{key_index}',
-                                        '-n', f'ubuntu,{user}',
-                                        '-V', f'+{os.getenv("CERTIFICATE_VALID_DAYS") or 7}d',
-                                        temp_path])
+        subprocess.check_output(['ssh-keygen',
+                                 '-s', 'ca_user_key',
+                                 '-P', os.getenv('CA_PASS'),
+                                 '-I', f'{user}#{key_index}',
+                                 '-n', f'ubuntu,{user}',
+                                 '-V', f'+{os.getenv("CERTIFICATE_VALID_DAYS") or 7}d',
+                                 temp_path])
+
+        with open(f'{temp_path}-cert.pub') as f:
+            cert = f.read()
+
         os.remove(temp_path)
         await ctx.send(cert, delete_after=30.0)
 
@@ -103,7 +108,7 @@ def main():
             await ctx.send('Unknown Error Occurred', delete_after=10)
             return
 
-        with open('revoked_keys', 'a') as f:
+        with open('ssh_revoked_keys', 'a') as f:
             f.write(public_key)
             f.write('\n')
 
