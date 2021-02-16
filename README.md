@@ -107,5 +107,7 @@ RevokedKeys /etc/ssh/ssh_revoked_keys
 
 ## Notes
 
+- Use branch **server** for deployment.  
+  ``git clone -b server --single-branch https://github.com/maxswjeon/authentication-bot``
 - `/revoke` does not revoke Certificates that are generated, they revoke **Keys**. Use with caution.
 - All environment variables in `.env` are **Required** or it will cause error.
