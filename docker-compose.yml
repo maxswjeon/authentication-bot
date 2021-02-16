@@ -1,7 +1,7 @@
 version: '3'
 services:
   bot:
-    image: maxswjeon/certmanager:latest
+    image: maxswjeon/certmanager:0.4
     hostname: authentication-bot
     container_name: authentication_bot
     restart: always
