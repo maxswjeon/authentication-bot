@@ -159,6 +159,23 @@ def main():
     bot.run(os.getenv('BOT_TOKEN'))
 
 
+def init():
+    if not os.path.exists(os.getenv('DATABASE_PATH')):
+        database = sqlite3.connect(os.getenv('DATABASE_PATH'))
+        database.execute('create table user_keys ('
+                         'id integer not null constraint user_keys_pk primary key autoincrement, '
+                         'user integer not null, '
+                         'key text not null'
+                         ');')
+        database.execute('create unique index user_keys_id_uindex on user_keys (id);')
+        database.commit()
+        database.close()
+
+    if not os.path.isdir('temp'):
+        os.mkdir('temp')
+
+
 if __name__ == '__main__':
     dotenv.load_dotenv()
+    init()
     main()
