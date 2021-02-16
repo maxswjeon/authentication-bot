@@ -24,4 +24,4 @@ RUN apk del \
 RUN mkdir temp
 COPY ./main.py /root/main.py
 
-ENTRYPOINT ['python', '/root/main.py']
+ENTRYPOINT ["python", "/root/main.py"]
