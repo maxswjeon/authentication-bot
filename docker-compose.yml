@@ -1,0 +1,14 @@
+version: '3'
+services:
+  bot:
+    image: maxswjeon/certmanager:latest
+    hostname: authentication-bot
+    container_name: authentication_bot
+    restart: always
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - CA_PASS=${CA_PASS}
+      - DATABASE_PATH=${DATABASE_PATH}
+    volumes:
+      - /etc/ssh/ca_user_key:/root/ca_user_key
+      - /etc/ssh/ssh_revoked_keys:/root/ssh_revoked_keys

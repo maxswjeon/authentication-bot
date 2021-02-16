@@ -40,7 +40,7 @@ def main():
 
     database = sqlite3.connect(os.getenv('DATABASE_PATH'))
 
-    @bot.command()
+    @bot.command(brief='Generate Certificate for SSH Login')
     async def authorize(ctx: commands.Context, *, public_key: str):
         try:
             key_data = sshpubkeys.SSHKey(public_key, strict=True)
@@ -88,7 +88,7 @@ def main():
         os.remove(temp_path)
         await ctx.send(cert, delete_after=30.0)
 
-    @bot.command()
+    @bot.command(brief='Revoke Exposed, Stolen Key')
     async def revoke(ctx: commands.Context, key_index: int):
         cursor = database.cursor()
         public_key = cursor.execute(f'SELECT key FROM user_keys WHERE id = {key_index}').fetchone()[0]
@@ -100,10 +100,14 @@ def main():
             await ctx.send('Unknown Error Occurred', delete_after=10)
             return
 
+        with open('revoked_keys', 'a') as f:
+            f.write(public_key)
+            f.write('\n')
+
         cursor.execute(f'DELETE FROM user_keys WHERE id = {key_index}')
         await ctx.send(f'Revoked Key : `{public_key[:50]}... ({key_data.comment})`', delete_after=10)
 
-    @bot.command()
+    @bot.command(brief='List Keys Authorized Before')
     async def manage(ctx: commands.Context):
         cursor = database.cursor()
         key_list = ''
@@ -123,7 +127,7 @@ def main():
 
         await ctx.send(key_list, delete_after=30.0)
 
-    @bot.command(description='Delete Messages from Bot')
+    @bot.command(brief='Delete Messages from Bot')
     async def clear(ctx: commands.Context):
         print('Command: /clear')
         await ctx.channel.purge(limit=100, check=lambda m: m.author == bot.user)
