@@ -1,11 +1,12 @@
 FROM python:alpine
 WORKDIR /root
 
-RUN apk add --update --no-cache
+RUN apk add --update --no-cache \
         gcc \
         musl-dev \
         libffi \
         libffi-dev \
+        cargo \
         openssl \
         openssl-dev \
         openssh-keygen
@@ -13,11 +14,12 @@ RUN apk add --update --no-cache
 COPY ./requirements.txt /root/requirements.txt
 RUN pip install -r requirements.txt
 
-RUN apk del
+RUN apk del \
         gcc \
         musl-dev \
         libffi-dev \
-        openssl-dev
+        openssl-dev \
+        cargo
 
 RUN mkdir temp
 COPY ./main.py /root/main.py
