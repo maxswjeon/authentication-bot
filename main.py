@@ -81,7 +81,7 @@ def main():
         with open(temp_path, "w") as f:
             f.write(public_key)
 
-        user = ctx.author.split('#')[0]
+        user = ctx.author.name.split('#')[0]
         cert = subprocess.check_output(['ssh-keygen',
                                         '-s', 'ca_user_key',
                                         '-l', f'{user}#{key_index}',
